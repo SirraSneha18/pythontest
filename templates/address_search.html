@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Search</title>
+</head>
+<body>
+    <h1>Address Search</h1>
+    <form action="/address_search_upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Upload File (CSV):</label>
+        <input type="file" name="file" id="file" accept=".csv" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+
+    <h2>Search Results:</h2>
+    <div id="results">
+        <!-- Results will be displayed here after file processing -->
+    </div>
+
+    <script>
+        // Handling the form submission and displaying the results dynamically
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/address_search_upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById('results').innerHTML = `
+                <p><strong>Filename:</strong> ${result.filename}</p>
+                <p><strong>CSV Data:</strong></p>
+                <pre>${result.csv_data}</pre>
+            `;
+        });
+    </script>
+</body>
+</html>

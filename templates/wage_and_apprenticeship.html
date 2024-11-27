@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wage and Apprenticeship</title>
+</head>
+<body>
+    <h1>Wage and Apprenticeship</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Upload File (PDF):</label>
+        <input type="file" name="file" id="file" accept=".pdf" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+
+    <h2>Results:</h2>
+    <div id="results">
+        <!-- Results will be displayed here after file processing -->
+    </div>
+
+    <script>
+        // Handling the form submission and displaying the results dynamically
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            const imagePaths = result.image_paths.map(path => `<img src="${path}" alt="Image">`).join('');
+            document.getElementById('results').innerHTML = `
+                <p><strong>CSV Data:</strong></p>
+                <pre>${result.csv_data.join('\n')}</pre>
+                <div>${imagePaths}</div>
+            `;
+        });
+    </script>
+</body>
+</html>
